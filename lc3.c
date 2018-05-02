@@ -401,11 +401,7 @@ void displayCPU(CPU_p *cpu) {
     //ncurses requires manual refresh and can be finnicky, so there might be a few too many refresh() and wrefresh(window) calls
     while (option != PROMPT_QUIT)
     {
-<<<<<<< HEAD
-        mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) Step 4) Run  5) Display mem 9) exit ");
-=======
         mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) Step 4) Run 5) Display mem 9) exit ");
->>>>>>> c4902de7ac21c38d2c2d40f06b0c4fed1444224c
 	    refresh(); 
 	    wrefresh(local_win);
         mvwscanw(local_win, CONSOLE_Y, CONSOLE_X,  "%c", &option);
