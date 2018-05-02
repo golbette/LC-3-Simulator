@@ -68,12 +68,21 @@ void TRAP_getch(CPU_p * cpu, WINDOW * IO_Window) {
 }
 
 void TRAP_out(CPU_p * cpu, WINDOW * IO_Window) {
-    
+    mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", cpu->reg[0]);
     
 }
 
 void TRAP_puts(CPU_p * cpu, WINDOW * IO_Window) {
     
+    char c = cpu->memory[cpu->reg[0]];
+    unsigned short int memindex = cpu->reg[0];
+    
+    while (c != '\n')
+    {
+        mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", c);
+        memindex++;
+        c = cpu->memory[memindex];
+    }
     
 }
 
@@ -397,7 +406,7 @@ void displayCPU(CPU_p *cpu) {
     //ncurses requires manual refresh and can be finnicky, so there might be a few too many refresh() and wrefresh(window) calls
     while (option != PROMPT_QUIT)
     {
-        mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) 4) Run Step 5) Display mem 9) exit ");
+        mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) Step 4) Run  5) Display mem 9) exit ");
 	    refresh(); 
 	    wrefresh(local_win);
         mvwscanw(local_win, CONSOLE_Y, CONSOLE_X,  "%c", &option);
