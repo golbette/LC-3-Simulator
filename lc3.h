@@ -23,10 +23,10 @@
 #define OP_TRAP           15 // 1111 0000 0000 0000
 #define OP_LD              2 // 0010 0000 0000 0000
 #define OP_ST              3 // 0011 0000 0000 0000
-#define OP_JMP            12 // 1100 0000 0000 0000 - RET uses same OPCODE
+#define OP_JMP_RET        12 // 1100 0000 0000 0000 - RET uses same OPCODE
 #define OP_BR              0 // 0000 0000 0000 0000
 #define OP_LEA			  14 // 1110 0000 0000 0000
-#define OP_JSRR			   4 // 0100 0000 0000 0000
+#define OP_JSR_JSRR		   4 // 0100 0000 0000 0000
 
 #define MASK_OPCODE    61440 // 1111 0000 0000 0000
 #define MASK_DR         3584 // 0000 1110 0000 0000
@@ -39,7 +39,7 @@
 #define MASK_IMMED5       31 // 0000 0000 0001 1111
 #define MASK_NZP        3584 // 0000 1110 0000 0000
 
-#define CONDITION_N        4 // 0000 1000 0000 0000
+#define CONDITION_N        4 // 0000 1000 0000 0000 - Same bit used to check JSR/JSRR
 #define CONDITION_Z        2 // 0000 0100 0000 0000
 #define CONDITION_P        1 // 0000 0010 0000 0000
 #define CONDITION_NZ       6 // 0000 1100 0000 0000

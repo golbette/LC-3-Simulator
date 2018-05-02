@@ -94,7 +94,7 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
     // check to make sure both pointers are not NULL
     // do any initializations here
     //fields for the IR
-    unsigned int opcode, dr, sr1, sr2, bit5, immed, state, condition;
+    unsigned int opcode, dr, sr1, sr2, bit5, bit11, immed, state, condition, baser, temp;
     //fields for the ALU
     short result, A, B, offset;
     //trap vector
@@ -141,6 +141,17 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                     cpu->mar = (cpu->PC) + offset; // microstate 2.
 
                     break;
+
+                case OP_LEA:
+                    dr = cpu->ir & MASK_DR;
+                    dr = dr >> 9;
+                    offset = cpu->ir & MASK_PCOFFSET9;
+                    if (offset > 255) {
+                        offset = offset - 256;
+                    }
+
+                    break;
+
                 case OP_ST:
                     dr = cpu->ir & MASK_DR;// This is actually a source register, but still use dr.
                     dr = dr >> 9;
@@ -203,10 +214,22 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                     cpu->mdr = cpu->reg[dr];
                     break;
 
-                case OP_JMP:
+                case OP_JMP_RET:
                     sr1 = cpu->ir & MASK_SR1;
                     sr1 = sr1 >> 6;
                     cpu->A = cpu->reg[sr1];
+                    break;
+
+                case OP_JSR_JSRR:
+                    temp = cpu->PC;
+                    bit11 = cpu->ir >> 11;
+                    if (bit11 == 0) {
+                        baser = ((cpu->ir >> 6) & MASK_SR1);
+                        cpu->PC = cpu->reg[baser];
+                    } else {
+                        offset = cpu->ir & MASK_PCOFFSET11;
+                        cpu->PC = cpu->PC + offset;
+                    }
                     break;
 
                 case OP_BR:
@@ -248,6 +271,10 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                     cpu->PC = cpu->A;
                     break;
 
+                case OP_JSR_JSRR:
+                    cpu->reg[7] = temp;
+                    break;
+
                 case OP_BR:
                      if (checkBranchEnabled(condition, cpu)) {
                         cpu->PC = cpu->PC + offset;
@@ -270,6 +297,11 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
 
             case OP_LD:
                 cpu->reg[dr] = cpu->mdr; // Load into the register.
+                cpu->cc = getConditionCode(cpu->reg[dr]);
+                break;
+
+            case OP_LEA:
+                cpu->reg[dr] = cpu->PC + offset;
                 cpu->cc = getConditionCode(cpu->reg[dr]);
                 break;
 
