@@ -276,7 +276,7 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                     trap(vector8, cpu, IO_Window);
                     break;
 
-                case OP_JMP:
+                case OP_JMP_RET:
                     cpu->PC = cpu->A;
                     break;
 
