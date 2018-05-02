@@ -94,6 +94,9 @@ struct CPUType {
 	unsigned short B; //operand 
 };
 
+void TRAP_getch(CPU_p * cpu, WINDOW * IO_Window);
+void TRAP_out(CPU_p * cpu, WINDOW * IO_Window);
+void TRAP_puts(CPU_p * cpu, WINDOW * IO_Window);
 void displayMem(CPU_p *cpu);
 unsigned short checkBranchEnabled (unsigned short condition, CPU_p *cpu);
 void refreshDisplay(CPU_p *cpu, WINDOW *local_win);
