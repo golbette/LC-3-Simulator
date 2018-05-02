@@ -63,12 +63,21 @@ void TRAP_getch(CPU_p * cpu, WINDOW * IO_Window) {
 }
 
 void TRAP_out(CPU_p * cpu, WINDOW * IO_Window) {
-    
+    mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", cpu->reg[0]);
     
 }
 
 void TRAP_puts(CPU_p * cpu, WINDOW * IO_Window) {
     
+    char c = cpu->memory[cpu->reg[0]];
+    unsigned short int memindex = cpu->reg[0];
+    
+    while (c != '\n')
+    {
+        mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", c);
+        memindex++;
+        c = cpu->memory[memindex];
+    }
     
 }
 
