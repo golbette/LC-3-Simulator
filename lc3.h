@@ -5,10 +5,10 @@
  *  Authors:  Michael Josten, and Samantha Anderson
  *  version: 408a
  */
- 
 #include <ncurses.h>
 #ifndef LC3_H_
 #define LC3_H_
+
 //constants
 #define FETCH     0
 #define DECODE    1
@@ -23,16 +23,17 @@
 #define OP_TRAP           15 // 1111 0000 0000 0000
 #define OP_LD              2 // 0010 0000 0000 0000
 #define OP_ST              3 // 0011 0000 0000 0000
-#define OP_JMP            12 // 1100 0000 0000 0000
+#define OP_JMP            12 // 1100 0000 0000 0000 - RET uses same OPCODE
 #define OP_BR              0 // 0000 0000 0000 0000
-#define OP_JSRR            4 // 0100 0000 0000 0000
-#define OP_LEA            14 // 1110 0000 0000 0000
+#define OP_LEA			  14 // 1110 0000 0000 0000
+#define OP_JSRR			   4 // 0100 0000 0000 0000
 
 #define MASK_OPCODE    61440 // 1111 0000 0000 0000
 #define MASK_DR         3584 // 0000 1110 0000 0000
-#define MASK_SR1         448 // 0000 0001 1100 0000
+#define MASK_SR1         448 // 0000 0001 1100 0000 - BaseR uses same mask as SR1
 #define MASK_SR2           7 // 0000 0000 0000 0111
 #define MASK_PCOFFSET9   511 // 0000 0001 1111 1111
+#define MASK_PCOFFSET11	2047 // 0000 0111 1111 1111
 #define MASK_TRAPVECT8   255 // 0000 0000 1111 1111
 #define MASK_BIT5         32 // 0000 0000 0010 0000
 #define MASK_IMMED5       31 // 0000 0000 0001 1111
@@ -73,9 +74,12 @@
 //ncurses prompt options
 #define PROMPT_LOAD '1'
 #define PROMPT_STEP '2'
-#define PROMPT_RUN  '4'
+#define PROMPT_RUN	'4'
 #define PROMPT_MEM  '5'
 #define PROMPT_QUIT '9'
+
+//function prototypes
+typedef struct CPUType CPU_p;
 
 struct CPUType {
 	unsigned short int PC;     // program counter.
@@ -90,18 +94,16 @@ struct CPUType {
 	unsigned short B; //operand 
 };
 
-typedef struct CPUType CPU_p;
+void displayMem(CPU_p *cpu);
+unsigned short checkBranchEnabled (unsigned short condition, CPU_p *cpu);
 void refreshDisplay(CPU_p *cpu, WINDOW *local_win);
-int controller (CPU_p*, short, WINDOW*);
+int controller (CPU_p*, short, WINDOW *IO_Window);
 void displayCPU(CPU_p*);
 void zeroOut(unsigned short *array, int);
 CPU_p initializeCPU();
 unsigned short ZEXT(unsigned short);
 unsigned short SEXT(unsigned short);
-void TRAP_getch(CPU_p*, WINDOW*);
-void TRAP_out(CPU_p*, WINDOW*);
-void TRAP_puts(CPU_p*, WINDOW*);
-void TRAP(unsigned short, CPU_p, WINDOW*);
+void TRAP(unsigned short, CPU_p);
 unsigned short getConditionCode(unsigned short);
 int loadInstructions(CPU_p *cpu, char *fileName);
 
