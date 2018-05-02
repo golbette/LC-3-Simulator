@@ -17,11 +17,6 @@
 #include <stdbool.h>
 #include <ncurses.h>
 
-//function prototypes
-void displayMem(CPU_p *cpu);
-unsigned short checkBranchEnabled (unsigned short condition, CPU_p *cpu);
-
-
 /*
 * Simulates trap table lookup for now
 */
@@ -397,7 +392,7 @@ void displayCPU(CPU_p *cpu) {
     //ncurses requires manual refresh and can be finnicky, so there might be a few too many refresh() and wrefresh(window) calls
     while (option != PROMPT_QUIT)
     {
-        mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) 4) Run Step 5) Display mem 9) exit ");
+        mvwprintw(local_win, PROMPT_Y, PROMPT_X, "Select: 1) Load 2) Step 4) Run 5) Display mem 9) exit ");
 	    refresh(); 
 	    wrefresh(local_win);
         mvwscanw(local_win, CONSOLE_Y, CONSOLE_X,  "%c", &option);
@@ -489,12 +484,12 @@ void refreshDisplay(CPU_p *cpu, WINDOW *local_win){
 	unsigned short int i;
 	mvwprintw(local_win, REG_START_Y, REG_START_X, "Registers");
 	for (i = 0; i < REG_MAX; i++){
-		mvwprintw(local_win, REG_START_Y+i, REG_START_X, "R%d: 0x%x     ", i, cpu->reg[i]);
+		mvwprintw(local_win, REG_START_Y+i, REG_START_X, "R%d: 0x%04x     ", i, cpu->reg[i]);
 	}
 	
 	mvwprintw(local_win, MEM_START_Y, MEM_START_X, "Memory");
 	for (i = 0; i < 16; i++) {
-		mvwprintw(local_win, MEM_START_Y+i, MEM_START_X, "MEM 0x%x:    0x%x", i+cpu->originalPC, cpu->memory[cpu->originalPC+i]);
+		mvwprintw(local_win, MEM_START_Y+i, MEM_START_X, "MEM 0x%04x:    0x%04x", i+cpu->originalPC, cpu->memory[cpu->originalPC+i]);
 	}
 
     //figure out CC values
@@ -507,11 +502,11 @@ void refreshDisplay(CPU_p *cpu, WINDOW *local_win){
     if (cpu->cc == CONDITION_P) P = '1';
     
     //Various other registers print here
-	mvwprintw(local_win, PC_IR_Y, PC_A_X, "PC: 0x%x", cpu->PC);
-	mvwprintw(local_win, PC_IR_Y, IR_B_X, "IR: 0x%x", cpu->ir);
-	mvwprintw(local_win, A_B_Y, PC_A_X, "A: 0x%x", cpu->A);
-	mvwprintw(local_win, A_B_Y, IR_B_X, "B: 0x%x", cpu->B);
-	mvwprintw(local_win, MAR_MDR_Y, PC_A_X, "MAR: 0x%x MDR: 0x%x ", cpu->mar, cpu->mdr);
+	mvwprintw(local_win, PC_IR_Y, PC_A_X, "PC:  0x%04x", cpu->PC);
+	mvwprintw(local_win, PC_IR_Y, IR_B_X, "IR:  0x%04x", cpu->ir);
+	mvwprintw(local_win, A_B_Y, PC_A_X, "A:   0x%04x", cpu->A);
+	mvwprintw(local_win, A_B_Y, IR_B_X, "B:   0x%04x", cpu->B);
+	mvwprintw(local_win, MAR_MDR_Y, PC_A_X, "MAR: 0x%04x MDR: 0x%04x ", cpu->mar, cpu->mdr);
 	mvwprintw(local_win, CC_Y, CC_X, "CC:  N: %c  Z: %c  P: %c ", N, Z, P);
 	//wmove(local_win, CONSOLE_X, 5);
 	//wmove(local_win, WIN_HEIGHT - 5, 5);
