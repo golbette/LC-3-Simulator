@@ -2,8 +2,8 @@
  * lc3.c
  *
  *  Date Due: Apr 8, 2018
- *  Authors:  Michael Josten, and Samantha Anderson
- *  version: 408a
+ *  Authors:  Samantha Anderson, Tyler Shupack, Enoch Chan
+ *  version: 502a
  *
  * This Program will simulate an lc3 finite state machine
  * by taking the input of a hex file and simulating each
@@ -226,7 +226,6 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                 case OP_JMP_RET:
                     sr1 = cpu->ir & MASK_SR1;
                     sr1 = sr1 >> 6;
-                    cpu->A = cpu->reg[sr1];
                     break;
 
                 case OP_JSR_JSRR:
@@ -277,7 +276,7 @@ int controller(CPU_p *cpu, short step, WINDOW * IO_Window) {
                     break;
 
                 case OP_JMP_RET:
-                    cpu->PC = cpu->A;
+                    cpu->PC = cpu->reg[sr1];
                     break;
 
                 case OP_JSR_JSRR:

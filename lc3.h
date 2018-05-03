@@ -2,8 +2,8 @@
  * lc3.h
  *
  *  Date Due: Apr 8, 2018
- *  Authors:  Michael Josten, and Samantha Anderson
- *  version: 408a
+ *  Authors:  Samantha Anderson, Tyler Shupack, Enoch Chan
+ *  version: 502a
  */
 #include <ncurses.h>
 #ifndef LC3_H_
