@@ -58,25 +58,32 @@ void trap(unsigned short vector, CPU_p *cpu, WINDOW * IO_Window)
 }
 
 void TRAP_getch(CPU_p * cpu, WINDOW * IO_Window) {
+    mvwprintw(IO_Window, IO_START_Y + 1, IO_START_X + 7, "");
+    wrefresh(IO_Window);
+    noecho();
     cpu->reg[0] = getch();
+    echo();
     
 }
 
 void TRAP_out(CPU_p * cpu, WINDOW * IO_Window) {
-    mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", cpu->reg[0]);
+    mvwprintw(IO_Window, IO_START_Y + 1, IO_START_X + 7, "%c", cpu->reg[0]);
+    refresh();
+    wrefresh(IO_Window);
     
 }
 
 void TRAP_puts(CPU_p * cpu, WINDOW * IO_Window) {
     
-    char c = cpu->memory[cpu->reg[0]];
+    char startAddr = cpu->memory[cpu->reg[0]];
     unsigned short int memindex = cpu->reg[0];
     
-    while (c != '\n')
+    while (startAddr != 0)
     {
-        mvwprintw(IO_Window, IO_START_X + 2, IO_START_Y + 3 , "%c", c);
+        mvwprintw(IO_Window, IO_START_Y + 1, IO_START_X + 7, "%c", startAddr);
         memindex++;
-        c = cpu->memory[memindex];
+        startAddr = cpu->memory[memindex];
+        wrefresh(IO_Window);
     }
     
 }
@@ -462,17 +469,22 @@ void displayCPU(CPU_p *cpu) {
         	        echo();
         	        
         	    }
+                wmove(local_win, CONSOLE_Y, CONSOLE_X);
+                wclrtoeol(local_win);
         	    refreshDisplay(cpu, local_win);
         	    break;
         
         
             case PROMPT_RUN:
+                wmove(local_win, CONSOLE_Y, CONSOLE_X);
+                wclrtoeol(local_win);
                 controller(cpu, 0, local_win);
                 refreshDisplay(cpu, local_win);
                 break;
         
             case PROMPT_STEP:
-            
+                wmove(local_win, CONSOLE_Y, CONSOLE_X);
+                wclrtoeol(local_win);
                 controller(cpu, 1, local_win);
                 refreshDisplay(cpu, local_win);
                 break;
@@ -517,7 +529,7 @@ void displayCPU(CPU_p *cpu) {
 /*Refreshes the CPU display. Call this after every STEP, memory change, instruction set load, etc. */
 void refreshDisplay(CPU_p *cpu, WINDOW *local_win){
     //Wipe the window to get rid of artifacts
-    werase(local_win);
+    //werase(local_win);
     wrefresh(local_win);
     
     //Drawing REG and MEM values happens here
